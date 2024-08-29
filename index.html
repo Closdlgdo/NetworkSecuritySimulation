@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Business Network Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Small Business Network Simulation Project</h1>
+        <nav>
+            <ul>
+                <li><a href="#setup">Setup</a></li>
+                <li><a href="#firewall">Firewall</a></li>
+                <li><a href="#vpn">VPN</a></li>
+                <li><a href="#ids-ips">IDS/IPS</a></li>
+                <li><a href="#testing">Testing</a></li>
+                <li><a href="#github">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Step 1: Setup Section -->
+        <section id="setup">
+            <h2>Step 1: Set Up the Network Topology</h2>
+            <p>In this step, we will set up the network topology using UTM. This involves creating virtual machines (VMs) for pfSense, OpenVPN, IDS/IPS, and a client machine.</p>
+            <h3>1.1 Install UTM</h3>
+            <p>Download UTM from the official website and install it on your Mac. Once installed, launch UTM and get ready to create your virtual machines.</p>
+            <h3>1.2 Create Virtual Machines</h3>
+            <p>We will create the following VMs:</p>
+            <ul>
+                <li><strong>pfSense VM:</strong> This will act as the firewall and router for your network.</li>
+                <li><strong>OpenVPN Server VM:</strong> This will provide VPN access for remote connections.</li>
+                <li><strong>IDS/IPS VM:</strong> This will monitor network traffic and detect intrusions.</li>
+                <li><strong>Client VM:</strong> This will simulate a typical user machine on the network.</li>
+            </ul>
+            <h4>1.2.1 Creating the pfSense VM</h4>
+            <p>Follow these steps to create the pfSense VM:</p>
+            <ol>
+                <li>Open UTM and click on the <strong>+</strong> icon to create a new VM.</li>
+                <li>Select <strong>Virtualize</strong> and choose <strong>Other</strong> as the operating system.</li>
+                <li>Name the VM <strong>pfSense</strong> and allocate 1 GB of RAM and a 10 GB virtual hard disk.</li>
+                <li>Download the pfSense ISO from the official website and attach it as the CD/DVD drive in UTM.</li>
+                <li>Configure the network interfaces:
+                    <ul>
+                        <li>Network Interface 1: Set to <strong>NAT</strong> for internet access.</li>
+                        <li>Network Interface 2: Set to <strong>Bridged</strong> or <strong>Emulated LAN</strong> for LAN connectivity.</li>
+                    </ul>
+                </li>
+                <li>Start the VM and follow the installation instructions to set up pfSense.</li>
+            </ol>
+            <h4>1.2.2 Creating the OpenVPN Server VM</h4>
+            <p>Follow similar steps as above to create the OpenVPN Server VM, but use the Ubuntu Server ISO. Configure the network to be on the same LAN as pfSense.</p>
+            <h4>1.2.3 Creating the IDS/IPS VM</h4>
+            <p>Create another VM for IDS/IPS using the Ubuntu Server ISO. This VM will be used to install and configure Snort or Suricata.</p>
+            <h4>1.2.4 Creating the Client VM</h4>
+            <p>Create a client VM using the Ubuntu Desktop or another desktop OS like Windows. This VM will act as the user machine in the network.</p>
+            <h3>1.3 Network Configuration in UTM</h3>
+            <p>Ensure that all VMs are on the same virtual network, allowing them to communicate with each other. Use <strong>Bridged</strong> or <strong>Emulated LAN</strong> interfaces in UTM.</p>
+        </section>
+
+        <!-- Step 2: Firewall Configuration -->
+        <section id="firewall">
+            <h2>Step 2: Configure the Firewall (pfSense)</h2>
+            <p>In this step, you will configure pfSense to secure the network by setting up firewall rules.</p>
+            <h3>2.1 Initial Setup</h3>
+            <p>Start the pfSense VM in UTM and complete the initial setup wizard. Configure the WAN interface as NAT and the LAN interface as Bridged or Emulated LAN.</p>
+            <h3>2.2 Access pfSense Web Interface</h3>
+            <p>From the Client VM, open a web browser and navigate to the LAN IP of pfSense (e.g., <a href="http://192.168.1.1" target="_blank">http://192.168.1.1</a>). Log in with the default credentials (admin/pfsense).</p>
+            <h3>2.3 Basic Firewall Rules</h3>
+            <p>Set up firewall rules to allow and block traffic as needed. For example, you can allow HTTP/HTTPS traffic from the LAN to the WAN but block everything else by default.</p>
+        </section>
+
+        <!-- Step 3: VPN Setup -->
+        <section id="vpn">
+            <h2>Step 3: Set Up the VPN (OpenVPN)</h2>
+            <p>In this step, you will set up OpenVPN on the VPN Server VM to provide secure remote access to your network.</p>
+            <h3>3.1 Install OpenVPN on the VPN Server VM</h3>
+            <p>SSH into the VPN Server VM from the Client VM or directly through UTM. Use the following commands to install OpenVPN:</p>
+            <pre><code>sudo apt update
+sudo apt install openvpn</code></pre>
+            <h3>3.2 Configure OpenVPN</h3>
+            <p>Follow the OpenVPN configuration guide to set up the server and generate client certificates. You'll need to create a server.conf file with the appropriate settings and start the OpenVPN service.</p>
+        </section>
+
+        <!-- Step 4: IDS/IPS Deployment -->
+        <section id="ids-ips">
+            <h2>Step 4: Deploy IDS/IPS (Snort/Suricata)</h2>
+            <p>In this step, you will deploy Snort or Suricata on the IDS/IPS VM to monitor your network for potential threats.</p>
+            <h3>4.1 Install Snort/Suricata</h3>
+            <p>Use the following commands to install Snort or Suricata on the IDS/IPS VM:</p>
+            <pre><code>sudo apt update
+sudo apt install snort</code></pre>
+            <p>Or for Suricata:</p>
+            <pre><code>sudo apt update
+sudo apt install suricata</code></pre>
+            <h3>4.2 Configure IDS/IPS</h3>
+            <p>Configure Snort or Suricata to monitor traffic on the LAN interface. Set up rules to detect and alert on suspicious activities.</p>
+        </section>
+
+        <!-- Step 5: Testing -->
+        <section id="testing">
+            <h2>Step 5: Simulate Attacks & Vulnerability Testing</h2>
+            <p>In this step, you will use tools like Metasploit and Nikto to test your network's defenses.</p>
+            <h3>5.1 Install Testing Tools</h3>
+            <p>On the Client VM, install tools like Metasploit and Nikto to simulate attacks:</p>
+            <pre><code>sudo apt update
+sudo apt install metasploit-framework nikto</code></pre>
+            <h3>5.2 Run Vulnerability Scans</h3>
+            <p>Use Metasploit and Nikto to scan the network and identify potential vulnerabilities. Document the results and take necessary actions to mitigate risks.</p>
+        </section>
+
+        <!-- Step 6: GitHub Documentation -->
+        <section id="github">
+            <h2>Step 6: Document & Upload to GitHub</h2>
+            <p>In this step, you will document your project and upload the files to a GitHub repository.</p>
+            <h3>6.1 Create a GitHub Repository</h3>
+            <p>Go to GitHub and create a new repository named <strong>network-simulation-project</strong>. Clone the repository to your local machine.</p>
+            <h3>6.2 Upload Files</h3>
+            <p>Add your configuration files, scripts, and any documentation to the repository. Commit the changes and push them to GitHub.</p>
+            <h3>6.3 Share Your Repository</h3>
+            <p>Share your repository link on your resume, LinkedIn, and with potential employers to showcase your work.</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Small Business Network Simulation Project</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
